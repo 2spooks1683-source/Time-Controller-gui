@@ -132,7 +132,6 @@ local uiPadding = Instance.new("UIPadding")
 uiPadding.PaddingTop = UDim.new(0, 45)
 uiPadding.Parent = mainFrame
 
--- Komut gönderme fonksiyonunu tek bir yerde toplamak kod tekrarını önler
 local function sendTimeCommand(timeValue)
 	local hdAdmin = ReplicatedStorage:FindFirstChild("HDAdminHDClient")
 	if hdAdmin then
