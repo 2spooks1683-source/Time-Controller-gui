@@ -85,3 +85,100 @@ for i, timeData in ipairs(timeButtons) do
 		tween:Play()
 	end)
 end
+
+--- HD ADMIN VERSION ↓↓↓
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "TimeControllerGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 160, 0, 420)
+mainFrame.Position = UDim2.new(0.02, 0, 0.2, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 10)
+frameCorner.Parent = mainFrame
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "Title"
+titleLabel.Size = UDim2.new(1, 0, 0, 40)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Time Controller Gui"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextSize = 16
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.Parent = mainFrame
+
+local listLayout = Instance.new("UIListLayout")
+listLayout.Parent = mainFrame
+listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+listLayout.Padding = UDim.new(0, 6)
+listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+local uiPadding = Instance.new("UIPadding")
+uiPadding.PaddingTop = UDim.new(0, 45)
+uiPadding.Parent = mainFrame
+
+-- Komut gönderme fonksiyonunu tek bir yerde toplamak kod tekrarını önler
+local function sendTimeCommand(timeValue)
+	local hdAdmin = ReplicatedStorage:FindFirstChild("HDAdminHDClient")
+	if hdAdmin then
+		local signals = hdAdmin:FindFirstChild("Signals")
+		if signals then
+			local requestCommand = signals:FindFirstChild("RequestCommandSilent")
+			if requestCommand then
+				requestCommand:InvokeServer(":time " .. tostring(timeValue))
+			end
+		end
+	end
+end
+
+local menuItems = {
+	{ text = "Time 1", value = 1 },
+	{ text = "Time 5", value = 5 },
+	{ text = "Time 6.5", value = 6.5 },
+	{ text = "Time 9", value = 9 },
+	{ text = "Time 12", value = 12 },
+	{ text = "Time 16", value = 16 },
+	{ text = "Time 17.8", value = 17.8 },
+	{ text = "Time 18", value = 18 },
+	{ text = "Time 19", value = 19 }
+}
+
+for i, data in ipairs(menuItems) do
+	local button = Instance.new("TextButton")
+	button.Name = "Button_" .. i
+	button.Size = UDim2.new(0, 140, 0, 30)
+	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	button.BorderSizePixel = 0
+	button.Text = data.text
+	button.TextColor3 = Color3.fromRGB(235, 235, 235)
+	button.TextSize = 14
+	button.Font = Enum.Font.SourceSansSemibold
+	button.Parent = mainFrame
+
+	local btnCorner = Instance.new("UICorner")
+	btnCorner.CornerRadius = UDim.new(0, 6)
+	btnCorner.Parent = button
+
+	button.MouseLeave:Connect(function()
+		TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
+	end)
+
+	button.MouseButton1Click:Connect(function()
+		sendTimeCommand(data.value)
+	end)
+end
